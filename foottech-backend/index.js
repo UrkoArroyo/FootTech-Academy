@@ -81,7 +81,7 @@ app.get("/api/usuarios", (req, res) => {
 
 //5 Actualizar usuario
 
-app.put(sql, (err, results) => {
+app.put("/api/usuarios/:id", (req, res) => {
   const { id } = req.params
   const { nombre,email} = req.body
   const sql = "UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?"
@@ -95,12 +95,12 @@ app.put(sql, (err, results) => {
 
 //6 Eliminar usuario
 
-db.query(sql, [req.params.id], (err) => {
-  if(err) {
-    return res.status(500).json(err)
-  }
-  res.json({ message: "Usuario eliminado"})
-})
+// db.query(sql, [req.params.id], (err) => {
+//   if(err) {
+//     return res.status(500).json(err)
+//   }
+//   res.json({ message: "Usuario eliminado"})
+// })
 
 
 

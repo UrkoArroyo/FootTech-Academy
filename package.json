@@ -1,0 +1,21 @@
+{
+  "name": "foottech-monorepo",
+  "private": true,
+  "workspaces": [
+    "foottech-backend",
+    "foottech-frontend"
+  ],
+  "scripts": {
+    "start:backend": "npm --workspace=foottech-backend run start",
+    "start:frontend": "npm --workspace=foottech-frontend run start",
+    "start": "concurrently \"npm --workspace=foottech-backend run start\" \"npm --workspace=foottech-frontend run start\"",
+    "build:frontend": "npm --workspace=foottech-frontend run build",
+    "build:backend": "npm --workspace=foottech-backend run build",
+    "test:frontend": "npm --workspace=foottech-frontend run test",
+    "test:backend": "npm --workspace=foottech-backend run test",
+    "test": "npm run -ws test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
