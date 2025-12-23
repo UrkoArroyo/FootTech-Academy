@@ -22,6 +22,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  const httpAdapter = app.getHttpAdapter();
+  const expressApp = httpAdapter && typeof httpAdapter.getInstance === 'function' ? httpAdapter.getInstance() : null;
+  if (expressApp && typeof expressApp.set === 'function') {
+    expressApp.set('nestApp', app);
+  }
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
