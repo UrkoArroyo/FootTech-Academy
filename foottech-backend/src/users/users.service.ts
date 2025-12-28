@@ -15,15 +15,10 @@ export class UsersService {
     return createHash('sha512').update(password, 'utf8').digest('hex');
   }
 
-  findAll(user: Partial<User>): Promise<User[]> {
-    const { role } = user;
-    if (role === 'admin') {
-      return this.usersRepository.find();
-    } else {
-      return { error: 'Access denied' } as any;
-    }
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
-
+  
   findOneById(id: number): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id } });
   }

@@ -8,7 +8,7 @@
   "scripts": {
     "start:backend": "npm --workspace=foottech-backend run start:dev",
     "start:frontend": "npm --workspace=foottech-frontend run start",
-    "start": "concurrently \"npm --workspace=foottech-backend run start\" \"npm --workspace=foottech-frontend run start\"",
+    "start": "concurrently \"npm --workspace=foottech-backend run start:dev\" \"npm --workspace=foottech-frontend run start\"",
     "build:frontend": "npm --workspace=foottech-frontend run build",
     "build:backend": "npm --workspace=foottech-backend run build",
     "test:frontend": "npm --workspace=foottech-frontend run test",

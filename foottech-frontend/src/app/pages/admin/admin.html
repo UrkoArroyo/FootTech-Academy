@@ -1,0 +1,38 @@
+<section class="admin container">
+  <h2>Área de administración</h2>
+  <p>Lista de usuarios:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users(); track user.id) {
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" [routerLink]="['/admin/users', user.id]">Ver</a>
+          </td>
+        </tr>
+      }
+      @if (users().length === 0) {
+        <tr>
+          <td colspan="5">No hay usuarios disponibles.</td>
+        </tr>
+      }
+    </tbody> 
+  </table>
+
+  <div class="d-flex gap-2 mt-3">
+    <a class="btn btn-secondary" routerLink="/dashboard">Volver al Dashboard</a>
+  </div>
+</section>

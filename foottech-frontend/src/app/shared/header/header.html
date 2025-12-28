@@ -19,9 +19,25 @@
           </a>
         </li>
 
-        <li class="nav-item d-flex">
-          <a class="nav-link align-self-center text-dark" routerLink="/login"> Inicia sesión </a>
-        </li>
+        @if (isAuthenticated()) {
+          <li class="nav-item d-flex">
+            <a class="nav-link align-self-center" routerLink="/profile">Mi perfil</a>
+          </li>
+
+          @if (user() && user()?.role === 'admin') {
+            <li class="nav-item d-flex">
+              <a class="nav-link align-self-center text-dark" routerLink="/admin">Admin</a>
+            </li>
+          }
+
+          <li class="nav-item d-flex">
+            <a class="nav-link align-self-center text-dark" (click)="logout()" style="cursor: pointer;"> Cerrar sesión </a>
+          </li>
+        } @else {
+          <li class="nav-item d-flex">
+            <a class="nav-link align-self-center text-dark" routerLink="/login"> Inicia sesión </a>
+          </li>
+        }
       </ul>
     </div>
   </div>

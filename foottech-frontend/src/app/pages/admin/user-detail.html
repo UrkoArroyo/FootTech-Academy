@@ -1,0 +1,19 @@
+@if (user()) {
+  <section class="user-detail container">
+    <h2>Usuario: {{ user()?.name }}</h2>
+
+    <div class="card p-4 mb-3">
+      <p><strong>ID:</strong> {{ user()?.id }}</p>
+      <p><strong>Nombre:</strong> {{ user()?.name }}</p>
+      <p><strong>Email:</strong> {{ user()?.email }}</p>
+      <p><strong>Rol:</strong> {{ user()?.role }}</p>
+      <p><strong>Creado:</strong> {{ user()?.createdAt | date:'medium' }}</p>
+    </div>
+
+    <a class="btn btn-secondary" routerLink="/admin">Volver a Admin</a>
+  </section>
+} @else {
+  <section class="user-detail container">
+    <h2>Cargando usuario…</h2>
+  </section>
+}

@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt-strategy/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { JwtRequestExtractor } from './services/jwt-request-extractor.service';
+import { AdminGuard } from './guards/admin.guard';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { JwtRequestExtractor } from './services/jwt-request-extractor.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRequestExtractor],
+  providers: [AuthService, JwtStrategy, JwtRequestExtractor, AdminGuard],
   exports: [AuthService, JwtRequestExtractor],
 })
 export class AuthModule {}

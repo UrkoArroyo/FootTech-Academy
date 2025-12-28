@@ -1,0 +1,27 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" />
+      <div class="field-error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        <small *ngIf="form.get('email')?.errors?.['required']">Email es requerido.</small>
+        <small *ngIf="form.get('email')?.errors?.['email']">Email no válido.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" formControlName="password" type="password" />
+      <div class="field-error" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+        <small>Password es requerido.</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading()">{{ loading() ? 'Logging in...' : 'Login' }}</button>
+    </div>
+
+    <div *ngIf="error()" class="error">{{ error() }}</div>
+  </form>
+</div> 

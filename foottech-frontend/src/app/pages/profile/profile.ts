@@ -1,28 +1,26 @@
 import { Component, inject, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { UsersService, UserProfile } from '../../core/services/users.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../core/services/auth.service';import { UsersService, UserProfile } from '../../core/services/users.service';
+
 @Component({
-  selector: 'app-header',
+  selector: 'app-profile',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './header.html',
-  styleUrls: ['./header.css'],
+  templateUrl: './profile.html',
+  styleUrls: ['./profile.css'],
 })
-export class HeaderComponent {
+export class ProfileComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private users = inject(UsersService);
-
-  public isAuthenticated: Signal<boolean> = toSignal(this.auth.isAuthenticated$, {
-    initialValue: false,
-  });
 
   public user: Signal<UserProfile | null> = toSignal(this.users.getMe(), { initialValue: null });
 
   logout() {
     this.auth.logout();
-    this.router.navigate([''], { replaceUrl: true });
+    this.router.navigate(['/login']);
   }
 }
