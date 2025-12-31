@@ -131,6 +131,22 @@ export class UsersService {
     return userEntity;
   }
 
+  async getJugadoresByEntrenador(entrenadorId: number): Promise<any[]> {
+    const raws = await this.entrenadorJugadoresRepository
+      .createQueryBuilder('rel')
+      .leftJoin('rel.jugador', 'jugador')
+      .leftJoin('jugador.role', 'role')
+      .select('jugador.id', 'id')
+      .addSelect('jugador.name', 'name')
+      .addSelect('jugador.email', 'email')
+      .addSelect('jugador.createdAt', 'createdAt')
+      .addSelect('role.name', 'role')
+      .where('rel.entrenador = :id', { id: entrenadorId })
+      .getRawMany();
+
+    return raws as any[];
+  }
+
   async addEntrenador(
     idJugador: number,
     idEntrenador: number,

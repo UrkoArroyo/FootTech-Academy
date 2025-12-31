@@ -40,6 +40,13 @@ export class UsersController {
     return this.usersService.findByRole('entrenador');
   }
 
+  @Get('entrenador/:id/jugadores')
+  @ApiOperation({ summary: 'List jugadores for entrenador' })
+  @ApiResponse({ status: 200, description: 'List of jugadores' })
+  findJugadoresByEntrenador(@Param('id') id: string): Promise<User[]> {
+    return this.usersService.getJugadoresByEntrenador(Number(id));
+  }
+
   @Get()
   @ApiOperation({ summary: 'List users' })
   @ApiResponse({ status: 200, description: 'List of users', type: [User] })

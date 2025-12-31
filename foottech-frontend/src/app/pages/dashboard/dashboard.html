@@ -1,7 +1,75 @@
 <section class="dashboard container">
-  <h2>Dashboard de ejemplo</h2>
-  <p>Esta es una ruta protegida de prueba.</p>
-  <div class="d-flex gap-2">
-    <a class="btn btn-primary" routerLink="/profile">Ir a perfil</a>
-  </div>
+  <h1>Bienvenido {{ me?.name | titlecase}} ({{ me?.role }})</h1>
+
+  <br>
+
+
+  @if (loading()) {
+    <div>Cargando datos…</div>
+  } @else {
+    <!-- Admin view -->
+    <div *ngIf="me && me.role === 'admin'">
+      <h3>Entrenadores y sus jugadores</h3>
+      <br>
+      <div *ngIf="entrenadoresWithJugadores().length === 0">No hay entrenadores registrados.</div>
+      <div *ngFor="let block of entrenadoresWithJugadores()">
+        <div class="trainer-header d-flex justify-content-between align-items-center mb-2">
+          <div class="trainer-block card mb-3 p-3">
+            <strong>{{ block.entrenador.name }}</strong>
+            <div class="text-muted">{{ block.entrenador.email }}</div>
+            <div class="text-muted small">{{ block.entrenador.role?.name }}</div>
+          </div>
+        </div>
+
+        <div class="players-row">
+          <div *ngFor="let p of block.jugadores" class="player-card card p-2">
+            <p class="mb-1">
+              <strong>{{ p.name }}</strong>
+            </p>
+            <p class="mb-1">{{ p.email }}</p>
+            <p class="text-muted small">{{ p.role }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entrenador view -->
+    <div *ngIf="me && me.role === 'entrenador'">
+      <h3>Tus jugadores</h3>
+      <br>
+      <div *ngIf="misJugadores.length === 0">No tienes jugadores asignados.</div>
+      <div class="players-row">
+        <div *ngFor="let p of misJugadores" class="player-card card p-2">
+          <p class="mb-1">
+            <strong>{{ p.name }}</strong>
+          </p>
+          <p class="mb-1">{{ p.email }}</p>
+          <p class="text-muted small">{{ p.role }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jugador view -->
+    <div *ngIf="me && me.role === 'jugador'">
+      <h3>Tu entrenador y compañeros</h3>
+      <div *ngIf="!miEntrenador">No tienes entrenador asignado.</div>
+      <div *ngIf="miEntrenador" class="mb-3 card p-2">
+        <p class="mb-1">
+          <strong>Entrenador: {{ miEntrenador.name }}</strong>
+        </p>
+        <p class="mb-1">{{ miEntrenador.email }}</p>
+      </div>
+
+      <div *ngIf="misCompaneros.length === 0">No tienes compañeros asignados.</div>
+      <div class="players-row">
+        <div *ngFor="let p of misCompaneros" class="player-card card p-2">
+          <p class="mb-1">
+            <strong>{{ p.name }}</strong>
+          </p>
+          <p class="mb-1">{{ p.email }}</p>
+          <p class="text-muted small">{{ p.role }}</p>
+        </div>
+      </div>
+    </div>
+  }
 </section>

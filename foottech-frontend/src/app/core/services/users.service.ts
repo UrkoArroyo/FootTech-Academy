@@ -57,4 +57,8 @@ export class UsersService {
   removeEntrenador(idRelation: number): Observable<any> {
     return this.http.delete<any>(`${this.base}/entrenador/${idRelation}`);
   }
+
+  getJugadoresByEntrenador(id: number) {
+    return this.http.get<UserProfile[]>(`${this.base}/entrenador/${id}/jugadores`);
+  }
 }
