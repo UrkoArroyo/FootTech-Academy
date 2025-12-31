@@ -6,7 +6,7 @@
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="mb-3">
           <label class="form-label">Nombre</label>
-          <input class="form-control" formControlName="nombre" />
+          <input class="form-control" formControlName="name" />
         </div>
 
         <div class="mb-3">
@@ -14,26 +14,19 @@
           <input type="password" class="form-control" formControlName="password" />
         </div>
 
- 
-        <input type="hidden" formControlName="created_at" />
-
-        <div class="mb-3">
-          <label class="form-label">Rol</label>
-          <select class="form-select" formControlName="rol">
-            <option value="jugador">Jugador</option>
-            <option value="entrenador">Entrenador</option>
-          </select>
-        </div>
-
         <div class="mb-3">
           <label class="form-label">Email</label>
           <input type="email" class="form-control" formControlName="email" />
         </div>
 
-        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-        <div *ngIf="success" class="alert alert-success">Registrado correctamente. Redirigiendo...</div>
+        @if(error){
+          <div class="alert alert-danger">{{ error }}</div>
+        }
+        @if(success){
+          <div class="alert alert-success">Registrado correctamente. Redirigiendo...</div>
+        }
 
-        <button class="btn btn-primary" type="submit" [disabled]="loading">Registrarse</button>
+        <button class="btn btn-primary" type="submit" [disabled]="loading || form.invalid || !form.touched">Registrarse</button>
       </form>
     </div>
   </div>

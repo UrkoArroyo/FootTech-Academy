@@ -18,6 +18,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { EntrenadorJugadores } from './entrenador_jugadores.entity';
 
 @ApiTags('users')
 @Controller('users')
@@ -29,6 +31,13 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Current user', type: User })
   me(@CurrentUser() user: Partial<User>) {
     return user;
+  }
+
+   @Get('entrenadores')
+  @ApiOperation({ summary: 'List entrenadores' })
+  @ApiResponse({ status: 200, description: 'List of entrenadores', type: [User] })
+  findEntrenadores(): Promise<User[]> {
+    return this.usersService.findByRole('entrenador');
   }
 
   @Get()
@@ -46,6 +55,7 @@ export class UsersController {
   }
 
   @Post()
+  @Public()
   @ApiOperation({ summary: 'Create a user' })
   @ApiResponse({ status: 201, description: 'Created user', type: User })
   @ApiBody({ type: CreateUserDto })
@@ -73,4 +83,31 @@ export class UsersController {
     }
     await this.usersService.remove(targetId);
   }
+
+ 
+
+  @Get(':idJugador/relation')
+  @ApiOperation({ summary: 'Get relation by user id' })
+  @ApiResponse({ status: 200, description: 'Relation found', type: User })
+  async getEntrenador(@Param('idJugador') idJugador: string) {
+    return this.usersService.getRelationByJugadorid(Number(idJugador));
+  }
+
+  @Patch(':idJugador/entrenador/:idEntrenador')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Add entrenador to jugador' })
+  @ApiResponse({ status: 200, description: 'Updated user', type: User })
+  addEntrenador(@Param('idJugador') idJugador: string, @Param('idEntrenador') idEntrenador: string): Promise<EntrenadorJugadores> {
+    return this.usersService.addEntrenador(Number(idJugador), Number(idEntrenador));
+  }
+
+  @Delete('entrenador/:idRelation')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Remove entrenador from jugador' })
+  @ApiResponse({ status: 200, description: 'Updated user', type: User })
+  removeEntrenador(@Param('idRelation') idRelation: string): Promise<EntrenadorJugadores> {
+    return this.usersService.removeEntrenadorJugadorRelation(Number(idRelation));
+  }
+
+  
 }

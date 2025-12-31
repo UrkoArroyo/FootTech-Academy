@@ -1,16 +1,73 @@
 @if (user()) {
   <section class="user-detail container">
-    <h2>Usuario: {{ user()?.name }}</h2>
+    <h2 *ngIf="!isEdit">Usuario: {{ user()?.name }}</h2>
+    <h2 *ngIf="isEdit">Editar usuario: {{ user()?.name }}</h2>
 
-    <div class="card p-4 mb-3">
-      <p><strong>ID:</strong> {{ user()?.id }}</p>
-      <p><strong>Nombre:</strong> {{ user()?.name }}</p>
-      <p><strong>Email:</strong> {{ user()?.email }}</p>
-      <p><strong>Rol:</strong> {{ user()?.role }}</p>
-      <p><strong>Creado:</strong> {{ user()?.createdAt | date:'medium' }}</p>
-    </div>
+    @if (!isEdit) {
+      <div class="card p-4 mb-3">
+        <p><strong>ID:</strong> {{ user()?.id }}</p>
+        <p><strong>Nombre:</strong> {{ user()?.name }}</p>
+        <p><strong>Email:</strong> {{ user()?.email }}</p>
+        <p><strong>Rol:</strong> {{ user()?.role }}</p>
+        <p><strong>Creado:</strong> {{ user()?.createdAt | date:'medium' }}</p>
+      </div>
 
-    <a class="btn btn-secondary" routerLink="/admin">Volver a Admin</a>
+      <a class="btn btn-secondary" routerLink="/admin">Volver a Admin</a>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="save()" class="card p-4 mb-3">
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input class="form-control" formControlName="name" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="email" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Contraseña (dejar en blanco para no cambiar)</label>
+          <input type="password" class="form-control" formControlName="password" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rol</label>
+          <select class="form-select" formControlName="role">
+            <option value="jugador">Jugador</option>
+            <option value="entrenador">Entrenador</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        @if (user()?.role === 'jugador') {
+          <div class="card p-3 mb-3">
+            <h3>Entrenador</h3>
+            @if (relation) {
+              <p>Entrenador actual: {{ relation?.entrenador?.name }} ({{ relation?.entrenador?.email }})</p>
+              <button class="btn btn-sm btn-danger mb-2" type="button" (click)="removeEntrenador()" [disabled]="removingRelation">Quitar entrenador</button>
+            } @else {
+              <p>No tiene entrenador asignado.</p>
+            }
+
+            <div class="mb-3">
+              <label class="form-label">Asignar entrenador</label>
+              <select class="form-select" formControlName="entrenadorId">
+                <option [ngValue]="null">-- Seleccionar entrenador --</option>
+                   @for (entrenador of entrenadores(); track entrenador.id) {
+                     <option [value]="entrenador.id">{{ entrenador.name }} ({{ entrenador.email }})</option>  
+                  }
+              </select>
+              <div class="mt-2">
+                <button class="btn btn-primary" type="button" (click)="assignEntrenador(form.value.entrenadorId)" [disabled]="assigning || !form.value.entrenadorId">Asignar</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" type="submit" [disabled]="loading">Guardar</button>
+          <button class="btn btn-secondary" type="button" (click)="cancel()" [disabled]="loading">Cancelar</button>
+        </div>
+        <p class="text-danger mt-2" *ngIf="error">{{ error }}</p>
+      </form>
+    }
   </section>
 } @else {
   <section class="user-detail container">

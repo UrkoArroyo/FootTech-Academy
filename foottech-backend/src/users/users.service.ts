@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -6,6 +10,7 @@ import { Role } from './role.entity';
 import { createHash } from 'crypto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EntrenadorJugadores } from './entrenador_jugadores.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +19,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(EntrenadorJugadores)
+    private readonly entrenadorJugadoresRepository: Repository<EntrenadorJugadores>,
   ) {}
 
   private hashPassword(password: string) {
@@ -33,7 +40,11 @@ export class UsersService {
 
     return raws as any[];
   }
-  
+
+  async findByRole(roleName: string): Promise<any[]> {
+    return this.usersRepository.find({ where: { role: { name: roleName } } });
+  }
+
   async findOneById(id: number): Promise<any | null> {
     const raw = await this.usersRepository
       .createQueryBuilder('user')
@@ -95,8 +106,10 @@ export class UsersService {
     if (changes.password) {
       userEntity.password = this.hashPassword(changes.password as string);
     }
-    if (typeof changes.name !== 'undefined') userEntity.name = changes.name as any;
-    if (typeof changes.email !== 'undefined') userEntity.email = changes.email as any;
+    if (typeof changes.name !== 'undefined')
+      userEntity.name = changes.name as any;
+    if (typeof changes.email !== 'undefined')
+      userEntity.email = changes.email as any;
     if (typeof changes.role !== 'undefined') {
       const roleEntity = await this.getRoleByName(changes.role as any);
       userEntity.role = roleEntity as any;
@@ -105,6 +118,53 @@ export class UsersService {
     const saved = await this.usersRepository.save(userEntity);
     const { password, role, ...rest } = saved as any;
     return { ...rest, role: role?.name } as any;
+  }
+
+  async getRelationByJugadorid(
+    id: number,
+  ): Promise<EntrenadorJugadores | null> {
+    const userEntity = await this.entrenadorJugadoresRepository.findOne({
+      where: { jugador: { id } },
+      relations: ['entrenador', 'jugador'],
+    });
+    if (!userEntity) throw new NotFoundException('User not found');
+    return userEntity;
+  }
+
+  async addEntrenador(
+    idJugador: number,
+    idEntrenador: number,
+  ): Promise<EntrenadorJugadores> {
+    const jugadorEntity = await this.usersRepository.findOne({
+      where: { id: idJugador },
+    });
+    if (!jugadorEntity) throw new NotFoundException('Jugador not found');
+    const entrenadorEntity = await this.usersRepository.findOne({
+      where: { id: idEntrenador },
+    });
+    if (!entrenadorEntity) throw new NotFoundException('Entrenador not found');
+    const relation = await this.entrenadorJugadoresRepository.findOne({
+      where: { jugador: jugadorEntity, entrenador: entrenadorEntity },
+    });
+    if (!relation) {
+      return await this.entrenadorJugadoresRepository.save({
+        jugador: jugadorEntity,
+        entrenador: entrenadorEntity,
+      });
+    } else {
+      throw new BadRequestException('Relation already exists');
+    }
+  }
+
+  async removeEntrenadorJugadorRelation(
+    relationId: number,
+  ): Promise<EntrenadorJugadores> {
+    const relation = await this.entrenadorJugadoresRepository.findOne({
+      where: { id: relationId },
+    });
+    if (!relation) throw new NotFoundException('Relation not found');
+    await this.entrenadorJugadoresRepository.remove(relation);
+    return relation;
   }
 
   async remove(id: number): Promise<void> {

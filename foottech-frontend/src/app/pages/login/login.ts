@@ -34,7 +34,7 @@ export class LoginComponent {
     this.error.set(null);
 
     const { email, password } = this.form.value as { email: string; password: string };
-debugger;
+
     this.auth.login(email, password)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({

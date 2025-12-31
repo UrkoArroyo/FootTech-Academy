@@ -21,6 +21,10 @@
           <td>{{ user.role }}</td>
           <td>
             <a class="btn btn-sm btn-primary" [routerLink]="['/admin/users', user.id]">Ver</a>
+            <a class="btn btn-sm btn-warning ms-1" [routerLink]="['/admin/users', user.id, 'edit']">Editar</a>
+            @if (me() && me()?.id !== user.id) {
+              <button class="btn btn-sm btn-danger ms-1" (click)="openDeleteModal(user)">Borrar</button>
+            }
           </td>
         </tr>
       }
@@ -35,4 +39,17 @@
   <div class="d-flex gap-2 mt-3">
     <a class="btn btn-secondary" routerLink="/dashboard">Volver al Dashboard</a>
   </div>
+
+  @if (showDeleteModal()) {
+    <div class="modal-backdrop">
+      <div class="modal-card">
+        <h3>Confirmar borrado</h3>
+        <p>¿Estás seguro que quieres borrar al usuario <strong>{{ selectedToDelete()?.name }}</strong>?</p>
+        <div class="d-flex gap-2">
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="deleting()">Borrar</button>
+          <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  }
 </section>
