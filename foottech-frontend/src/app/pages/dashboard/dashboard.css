@@ -3,6 +3,7 @@
 .players-row { display:flex; flex-wrap:wrap; gap:1rem; padding-left: 18px; }
 .player-card { min-width:160px; max-width:240px; flex: 0 1 200px; }
 .trainer-block { border: 1px solid #eee; border-radius:6px; padding: 0.5rem; }
+.card { max-width: 240px;}
 @media (max-width: 600px) {
   .player-card { flex: 1 1 100%; }
 }

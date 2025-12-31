@@ -22,7 +22,7 @@ export class DashboardComponent implements OnInit {
   misJugadores: UserProfile[] = [];
 
   // For jugador: my entrenador and teammates
-  miEntrenador: UserProfile | null = null;
+  miEntrenador: any = null;
   misCompaneros: UserProfile[] = [];
 
   ngOnInit(): void {

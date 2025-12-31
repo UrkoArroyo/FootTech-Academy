@@ -20,7 +20,7 @@ import { JwtAuthGuard } from './auth/jwt-strategy/jwt-auth.guard';
         password: config.get('DB_PASSWORD', ''),
         database: config.get('DB_DATABASE', 'foottech_db'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        synchronize: false,
         autoLoadEntities: true,
       }),
     }),

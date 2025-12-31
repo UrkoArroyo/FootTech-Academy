@@ -160,9 +160,16 @@ export class UsersService {
     });
     if (!entrenadorEntity) throw new NotFoundException('Entrenador not found');
     const relation = await this.entrenadorJugadoresRepository.findOne({
-      where: { jugador: jugadorEntity, entrenador: entrenadorEntity },
+      where: { jugador: {id: idJugador}, entrenador: {id: idEntrenador} },
     });
+
     if (!relation) {
+      const prevRelations = await this.entrenadorJugadoresRepository.find({
+      where: { jugador: {id: idJugador} },
+    });
+    if (prevRelations.length > 0) {
+      await this.entrenadorJugadoresRepository.remove(prevRelations);
+    }
       return await this.entrenadorJugadoresRepository.save({
         jugador: jugadorEntity,
         entrenador: entrenadorEntity,
