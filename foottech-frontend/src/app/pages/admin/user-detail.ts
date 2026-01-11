@@ -36,14 +36,14 @@ export class UserDetailComponent {
   loading = false;
   error: string | null = null;
 
-  // entrenador relation state
+
   entrenadores: Signal<UserProfile[]> = toSignal(this.users.getEntrenadores(), { initialValue: [] }); 
   relation: any | null = null;
   assigning = false;
   removingRelation = false;
 
   constructor() {
-    // patch form when user loads
+   
     this.users.getById(this.id).subscribe((u) => {
       if (u) {
         this.form.patchValue({ name: u.name, email: u.email, role: u.role });

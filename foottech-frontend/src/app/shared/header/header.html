@@ -21,7 +21,7 @@
 
         @if (isAuthenticated()) {
           <li class="nav-item d-flex">
-            <a class="nav-link align-self-center" routerLink="/profile">Mi perfil</a>
+            <a class="nav-link align-self-center" routerLink="/profile" style="cursor: pointer;">Mi perfil</a>
           </li>
 
           @if (user() && user()?.role === 'admin') {

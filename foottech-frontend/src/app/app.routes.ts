@@ -22,7 +22,6 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadComponent: () => import('./pages/register/register').then((m) => m.RegisterComponent),
   },
-  // Private routes
   {
     path: '',
     canActivate: [authGuard],
@@ -31,6 +30,11 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/admin/admin').then((m) => m.AdminComponent),
+      },
+      {
+        path: 'admin/register',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./pages/register/register').then((m) => m.RegisterComponent),
       },
       {
         path: 'admin/users',
@@ -49,12 +53,17 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.DashboardComponent),
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
       {
         path: 'profile',
         loadComponent: () => import('./pages/profile/profile').then((m) => m.ProfileComponent),
-      }
+      },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];

@@ -1,80 +1,136 @@
-<section class="dashboard container">
-  <h1>Bienvenido {{ me?.name | titlecase }} ({{ me?.role }})</h1>
-
-  <br />
-
-  @if (loading()) {
-    <div>Cargando datos…</div>
-  } @else {
-    <!-- Admin view -->
-    <div *ngIf="me && me.role === 'admin'">
-      <br />
-      <div *ngIf="entrenadoresWithJugadores().length === 0">No hay entrenadores registrados.</div>
-      <div *ngFor="let block of entrenadoresWithJugadores()">
-        <h3>Entrenador</h3>
-        <div class="trainer-header d-flex justify-content-between align-items-center mb-2">
-          <div class="trainer-block card mb-3 p-3">
-            <strong>{{ block.entrenador.name }}</strong>
-            <div class="text-muted">{{ block.entrenador.email }}</div>
-            <div class="text-muted small">{{ block.entrenador.role?.name }}</div>
-          </div>
-        </div>
-
-        <h4>Jugadores asignados</h4>
-        <div class="players-row">
-          <div *ngFor="let p of block.jugadores" class="player-card card p-2">
-            <p class="mb-1">
-              <strong>{{ p.name }}</strong>
-            </p>
-            <p class="mb-1">{{ p.email }}</p>
-            <p class="text-muted small">{{ p.role }}</p>
-          </div>
-        </div>
-        <br />
+<section class="dashboard">
+  <div class="container dashboard__container">
+    <header class="dashboard__header">
+      <div>
+        <h1 class="dashboard__title">Bienvenido {{ me?.name | titlecase }}</h1>
+        <p class="dashboard__subtitle">Rol: <span class="badge bg-primary">{{ me?.role }}</span></p>
       </div>
-    </div>
+    </header>
 
-    <!-- Entrenador view -->
-    <div *ngIf="me && me.role === 'entrenador'">
-      <h3>Tus jugadores</h3>
-      <br />
-      <div *ngIf="misJugadores.length === 0">No tienes jugadores asignados.</div>
-      <div class="players-row">
-        <div *ngFor="let p of misJugadores" class="player-card card p-2">
-          <p class="mb-1">
-            <strong>{{ p.name }}</strong>
-          </p>
-          <p class="mb-1">{{ p.email }}</p>
-          <p class="text-muted small">{{ p.role }}</p>
-        </div>
+    @if (loading()) {
+      <div class="dashboard__loading card p-4">
+        <div class="spinner-border" role="status"></div>
+        <span class="ms-3">Cargando datos…</span>
       </div>
-    </div>
+    } @else {
 
-    <!-- Jugador view -->
-    <div *ngIf="me && me.role === 'jugador'">
-      <h3>Tu entrenador y compañeros</h3>
-      <div *ngIf="!miEntrenador">No tienes entrenador asignado.</div>
+      @if (me && me.role === 'admin') {
+        <section class="dashboard__section">
+          <h2 class="dashboard__sectionTitle">Entrenadores</h2>
 
-      @if (miEntrenador) {
-        <div class="trainer-header d-flex justify-content-between align-items-center mb-2">
-          <div class="trainer-block card mb-3 p-3">
-            <strong>{{ miEntrenador.name }}</strong>
-            <div class="text-muted">{{ miEntrenador.email }}</div>
-            <div class="text-muted small">{{ miEntrenador.role?.name }}</div>
-          </div>
-        </div>
+          @if (entrenadoresWithJugadores().length === 0) {
+            <div class="empty card p-4">No hay entrenadores registrados.</div>
+          }
+
+          @for (block of entrenadoresWithJugadores(); track block.entrenador.id) {
+            <div class="panel card">
+              <div class="panel__head">
+                <div class="userCard">
+                  <div class="userAvatar">{{ block.entrenador.name?.[0] }}</div>
+                  <div>
+                    <div class="userName">{{ block.entrenador.name }}</div>
+                    <div class="userMeta">{{ block.entrenador.email }}</div>
+                    <div class="userMeta small text-muted">{{ block.entrenador.role?.name }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel__body">
+                <h3 class="panel__title">Jugadores asignados</h3>
+
+                <div class="gridCards">
+                  @for (p of block.jugadores; track p.id) {
+                    <article class="miniCard">
+                      <div class="miniCard__top">
+                        <div class="miniAvatar">{{ p.name[0] }}</div>
+                        <div class="miniInfo">
+                          <div class="miniName">{{ p.name }}</div>
+                          <div class="miniMeta">{{ p.email }}</div>
+                        </div>
+                      </div>
+                      <div class="miniFooter">
+                        <span class="badge bg-light text-dark">{{ p.role }}</span>
+                      </div>
+                    </article>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </section>
       }
 
-      <div *ngIf="misCompaneros.length === 0">No tienes compañeros asignados.</div>
-      <div class="players-row">
-        <div *ngFor="let p of misCompaneros" class="player-card card p-2">
-          <p class="mb-1">
-            <strong>{{ p.name }}</strong>
-          </p>
-          <p class="mb-1">{{ p.email }}</p>
-          <p class="text-muted small">{{ p.role }}</p>
-        </div>
-      </div>
-    </div>
-  }
+      @if (me && me.role === 'entrenador') {
+        <section class="dashboard__section">
+          <h2 class="dashboard__sectionTitle">Tus jugadores</h2>
+
+          @if (misJugadores.length === 0) {
+            <div class="empty card p-4">No tienes jugadores asignados.</div>
+          } @else {
+            <div class="gridCards">
+              @for (p of misJugadores; track p.id) {
+                <article class="miniCard">
+                  <div class="miniCard__top">
+                    <div class="miniAvatar">{{ p.name[0] }}</div>
+                    <div class="miniInfo">
+                      <div class="miniName">{{ p.name }}</div>
+                      <div class="miniMeta">{{ p.email }}</div>
+                    </div>
+                  </div>
+                  <div class="miniFooter">
+                    <span class="badge bg-light text-dark">{{ p.role }}</span>
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (me && me.role === 'jugador') {
+        <section class="dashboard__section">
+          <h2 class="dashboard__sectionTitle">Tu entrenador y compañeros</h2>
+
+          @if (!miEntrenador) {
+            <div class="empty card p-4">No tienes entrenador asignado.</div>
+          } @else {
+            <div class="panel card">
+              <div class="panel__head">
+                <div class="userCard">
+                  <div class="userAvatar">{{ miEntrenador.name?.[0] }}</div>
+                  <div>
+                    <div class="userName">{{ miEntrenador.name }}</div>
+                    <div class="userMeta">{{ miEntrenador.email }}</div>
+                    <div class="userMeta small text-muted">{{ miEntrenador.role?.name }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (misCompaneros.length === 0) {
+            <div class="empty card p-4 mt-3">No tienes compañeros asignados.</div>
+          } @else {
+            <h3 class="panel__title mt-4">Compañeros</h3>
+            <div class="gridCards">
+              @for (p of misCompaneros; track p.id) {
+                <article class="miniCard">
+                  <div class="miniCard__top">
+                    <div class="miniAvatar">{{ p.name[0] }}</div>
+                    <div class="miniInfo">
+                      <div class="miniName">{{ p.name }}</div>
+                      <div class="miniMeta">{{ p.email }}</div>
+                    </div>
+                  </div>
+                  <div class="miniFooter">
+                    <span class="badge bg-light text-dark">{{ p.role }}</span>
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
+      }
+    }
+  </div>
 </section>

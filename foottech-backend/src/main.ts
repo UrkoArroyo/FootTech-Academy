@@ -6,17 +6,16 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Prefijo global para la API
+ 
   app.setGlobalPrefix('api');
 
-  // Habilitar CORS para todos los orígenes (útil en desarrollo)
-  // En producción limita origin a tus dominios y ajusta `credentials` según sea necesario
+ 
   app.enableCors({ origin: true, credentials: true });
 
-  // Pipe de validación global
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  // Swagger config
+ 
   const config = new DocumentBuilder()
     .setTitle('FootTech API')
     .setDescription('Documentación de la API')

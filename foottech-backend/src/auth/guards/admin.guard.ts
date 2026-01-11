@@ -18,7 +18,7 @@ export class AdminGuard implements CanActivate {
 
     if (user.role !== 'admin') throw new ForbiddenException('Access denied');
 
-    // optionally attach the full user to request for downstream handlers
+    
     req.currentUser = user;
 
     return true;

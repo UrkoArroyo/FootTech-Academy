@@ -16,12 +16,9 @@ export class DashboardComponent implements OnInit {
   me: any = null;
   loading = signal(true);
 
-  // For admin: entrenadores and their players
   entrenadoresWithJugadores: any = signal([]);
-  // For entrenador: my players
   misJugadores: UserProfile[] = [];
 
-  // For jugador: my entrenador and teammates
   miEntrenador: any = null;
   misCompaneros: UserProfile[] = [];
 
@@ -53,7 +50,6 @@ export class DashboardComponent implements OnInit {
           return;
         }
 
-        // for each entrenador, fetch jugadores
         const results: Array<{ entrenador: UserProfile; jugadores: UserProfile[] }> = [];
         let remaining = list.length;
         list.forEach((e) => {
