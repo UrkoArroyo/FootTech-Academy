@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
-import { createHash } from 'crypto';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -13,17 +13,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  private hashSha512(value: string): string {
-    return createHash('sha512').update(value, 'utf8').digest('hex');
-  }
-
   async validateUser(email: string, password: string): Promise<User | null> {
-    const a =  this.hashSha512(password);
-    
     try {
-      return await this.usersRepository.findOneOrFail({
-        where: { email, password: this.hashSha512(password) },
-      });
+      const user = await this.usersRepository.findOne({ where: { email } });
+      if (!user) return null;
+      const match = await bcrypt.compare(password, user.password as string);
+      return match ? user : null;
     } catch (err) {
       return null;
     }

@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Role } from './role.entity';
-import { createHash } from 'crypto';
+import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EntrenadorJugadores } from './entrenador_jugadores.entity';
@@ -23,8 +23,9 @@ export class UsersService {
     private readonly entrenadorJugadoresRepository: Repository<EntrenadorJugadores>,
   ) {}
 
-  private hashPassword(password: string) {
-    return createHash('sha512').update(password, 'utf8').digest('hex');
+  private async hashPassword(password: string): Promise<string> {
+    const rounds = Number(process.env.BCRYPT_SALT_ROUNDS ?? 10);
+    return bcrypt.hash(password, rounds);
   }
 
   async findAll(): Promise<any[]> {
@@ -76,7 +77,7 @@ export class UsersService {
     const newUser = this.usersRepository.create({
       ...user,
       role: roleEntity,
-      password: this.hashPassword(user.password as string),
+      password: await this.hashPassword(user.password as string),
     });
     const saved = await this.usersRepository.save(newUser);
     const { password, role, ...rest } = saved as any;
@@ -104,7 +105,9 @@ export class UsersService {
     if (!userEntity) throw new NotFoundException('User not found');
 
     if (changes.password) {
-      userEntity.password = this.hashPassword(changes.password as string);
+      userEntity.password = await this.hashPassword(
+        changes.password as string,
+      );
     }
     if (typeof changes.name !== 'undefined')
       userEntity.name = changes.name as any;

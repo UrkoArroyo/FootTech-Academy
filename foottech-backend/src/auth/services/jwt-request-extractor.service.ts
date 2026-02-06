@@ -20,7 +20,7 @@ export class JwtRequestExtractor {
     if (typeof authHeader === 'string') {
       const parts = authHeader.split(' ');
       if (parts.length === 2 && /^Bearer$/i.test(parts[0])) return parts[1];
-      return authHeader; // fallback: whole header if not Bearer
+      return authHeader; 
     }
 
     const cookieToken =
