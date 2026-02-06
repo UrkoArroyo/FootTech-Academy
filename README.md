@@ -25,16 +25,8 @@ Base de datos
   mysql -u <DB_USER> -p <DB_NAME> < foottech_db.sql
 
 Inicio de sesión (admin)
-- Usa las credenciales que figuren en la base de datos. Reemplaza los valores por los reales:
+- Usa las credenciales de administrador:
 
-  Usuario: <ADMIN_USER>
-  
-  Contraseña: <ADMIN_PASSWORD>
+  Usuario: urkoarroyorivas@gmail.com
 
-- Ejemplo (si quieres un ejemplo de prueba, cámbialo por las credenciales del SQL):
-
-  Usuario: admin@ejemplo.com
-  Contraseña: admin123
-
-Notas
-- Sustituye los placeholders por los datos reales antes de usar.
+  Contraseña: prueba2
